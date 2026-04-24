@@ -88,15 +88,6 @@
 
   <div class="section">
     <h2 style="font-size:1.1rem;">1. quizData を貼り付ける</h2>
-    <p style="font-size:0.85rem; color:#4b5563;">
-      例：<br>
-      <code>
-      const quizData = [<br>
-      &nbsp;&nbsp;{ question: "apple の意味は？", choices: ["りんご", "バナナ", "ぶどう"], answer: 0 },<br>
-      &nbsp;&nbsp;{ question: "book の意味は？", choices: ["本", "机", "いす"], answer: 0 }<br>
-      ];
-      </code>
-    </p>
     <textarea id="dataInput" placeholder="ここに AI が生成した quizData のコードをそのまま貼り付けてください"></textarea>
     <button id="loadBtn" onclick="loadCustomData()">読み込んでクイズ開始</button>
     <div id="loadStatus" class="status"></div>
@@ -113,7 +104,7 @@
   </div>
 
   <script>
-    // グローバル変数として quizData を使う前提
+    // グローバル変数
     let quizData = [];
     let currentIndex = 0;
     let score = 0;
@@ -134,21 +125,22 @@
       }
 
       try {
-        // いったん空にしてから、貼り付けられたコードを評価
-        quizData = [];
-        currentIndex = 0;
-        score = 0;
-
-        // 貼り付けられたコード内で quizData が定義される想定
+        // eval で貼り付けられた quizData を読み込む
         eval(text);
 
+        // quizData が正しく読み込まれたかチェック
         if (!Array.isArray(quizData) || quizData.length === 0) {
           statusEl.textContent = "quizData が正しく定義されていません。配列になっているか確認してください。";
           return;
         }
 
+        // 読み込み後に初期化
+        currentIndex = 0;
+        score = 0;
+
         statusEl.textContent = "quizData を読み込みました。クイズを開始します。";
         renderQuestion();
+
       } catch (e) {
         console.error(e);
         statusEl.textContent = "コードの読み込み中にエラーが発生しました。形式を確認してください。";
