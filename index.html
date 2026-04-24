@@ -1,206 +1,213 @@
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <title>英語クイズ・バイブコーディング体験</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="UTF-8">
+<title>英語クイズ・バイブコーディング体験</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <style>
-    body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      margin: 16px;
-      line-height: 1.6;
-      background: #f7f7fb;
-    }
-    h1 {
-      font-size: 1.4rem;
-      margin-bottom: 0.5rem;
-    }
-    .section {
-      background: #ffffff;
-      border-radius: 8px;
-      padding: 12px 14px;
-      margin-bottom: 16px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.04);
-    }
-    textarea {
-      width: 100%;
-      min-height: 140px;
-      font-family: "SF Mono", Menlo, Consolas, monospace;
-      font-size: 0.8rem;
-      padding: 8px;
-      box-sizing: border-box;
-    }
-    button {
-      padding: 8px 16px;
-      border-radius: 6px;
-      border: none;
-      background: #2563eb;
-      color: #fff;
-      font-size: 0.9rem;
-      cursor: pointer;
-      margin-top: 8px;
-    }
-    button:disabled {
-      background: #9ca3af;
-      cursor: default;
-    }
-    .quiz-card {
-      background: #ffffff;
-      border-radius: 8px;
-      padding: 12px 14px;
-      margin-top: 8px;
-      border: 1px solid #e5e7eb;
-    }
-    .choices button {
-      display: block;
-      width: 100%;
-      text-align: left;
-      margin-top: 6px;
-      background: #e5e7eb;
-      color: #111827;
-    }
-    .choices button.correct {
-      background: #16a34a;
-      color: #fff;
-    }
-    .choices button.wrong {
-      background: #dc2626;
-      color: #fff;
-    }
-    .status {
-      font-size: 0.85rem;
-      color: #4b5563;
-      margin-top: 6px;
-    }
-  </style>
+<style>
+:root {
+--primary-color: #2563eb;
+--bg-color: #f7f7fb;
+--card-bg: #ffffff;
+--text-main: #111827;
+--text-sub: #4b5563;
+}
+body {
+font-family: system-ui, -apple-system, sans-serif;
+margin: 16px;
+line-height: 1.6;
+background: var(--bg-color);
+color: var(--text-main);
+}
+h1 { font-size: 1.4rem; margin-bottom: 0.5rem; color: var(--primary-color); }
+.section {
+background: var(--card-bg);
+border-radius: 12px;
+padding: 16px;
+margin-bottom: 16px;
+box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+}
+textarea {
+width: 100%;
+min-height: 160px;
+font-family: "SF Mono", Menlo, monospace;
+font-size: 0.85rem;
+padding: 12px;
+box-sizing: border-box;
+border: 1px solid #d1d5db;
+border-radius: 8px;
+background: #f9fafb;
+}
+button {
+padding: 10px 20px;
+border-radius: 8px;
+border: none;
+background: var(--primary-color);
+color: #fff;
+font-weight: 600;
+cursor: pointer;
+transition: opacity 0.2s;
+}
+button:active { opacity: 0.8; }
+.quiz-card {
+background: var(--card-bg);
+border-radius: 10px;
+padding: 16px;
+margin-top: 10px;
+border: 2px solid #e5e7eb;
+}
+.choices button {
+display: block;
+width: 100%;
+text-align: left;
+margin-top: 8px;
+background: #f3f4f6;
+color: var(--text-main);
+}
+.choices button.correct { background: #16a34a; color: #fff; border: none; }
+.choices button.wrong { background: #dc2626; color: #fff; border: none; }
+.status { font-size: 0.85rem; color: var(--text-sub); margin-top: 8px; }
+code { background: #eee; padding: 2px 4px; border-radius: 4px; font-size: 0.9em; }
+</style>
 </head>
 <body>
 
-  <div class="section">
-    <h1>英語クイズ・バイブコーディング体験</h1>
-    <p>
-      ① AI に英語で指示して <code>quizData</code> を作成してください。<br>
-      ② 下のテキストエリアにそのまま貼り付けます。<br>
-      ③ 「読み込んでクイズ開始」を押すと、あなたの単語でクイズが動きます。
-    </p>
-  </div>
+<div class="section">
+<h1>Vibe Coding クイズ・スタジオ</h1>
+<p style="font-size:0.9rem; color:var(--text-sub);">
+AIが生成したコードを貼り付けるだけで、あなた専用の学習アプリが完成します。
+</p>
+</div>
 
-  <div class="section">
-    <h2 style="font-size:1.1rem;">1. quizData を貼り付ける</h2>
-    <textarea id="dataInput" placeholder="ここに AI が生成した quizData のコードをそのまま貼り付けてください"></textarea>
-    <button id="loadBtn" onclick="loadCustomData()">読み込んでクイズ開始</button>
-    <div id="loadStatus" class="status"></div>
-  </div>
+<div class="section">
+<h2 style="font-size:1.1rem;">1. quizData を貼り付ける</h2>
+<textarea id="dataInput" placeholder="例：&#13;&#10;quizData = [&#13;&#10; { question: '...', choices: [...], answer: 0 },&#13;&#10;];"></textarea>
+<div style="margin-top:10px;">
+<button id="loadBtn" onclick="loadCustomData()">読み込んでクイズ開始</button>
+</div>
+<div id="loadStatus" class="status"></div>
+</div>
 
-  <div class="section">
-    <h2 style="font-size:1.1rem;">2. クイズエリア</h2>
-    <div id="quizArea">
-      <p style="font-size:0.9rem; color:#6b7280;">
-        まだクイズは読み込まれていません。上に quizData を貼り付けてボタンを押してください。
-      </p>
-    </div>
-    <div id="quizStatus" class="status"></div>
-  </div>
+<div class="section">
+<h2 style="font-size:1.1rem;">2. クイズエリア</h2>
+<div id="quizArea">
+<p style="color:#9ca3af;">上のエリアにデータを貼り付けてください。</p>
+</div>
+<div id="quizStatus" class="status"></div>
+</div>
 
-  <script>
-    // グローバル変数
-    let quizData = [];
-    let currentIndex = 0;
-    let score = 0;
+<script>
+let quizData = [];
+let currentIndex = 0;
+let score = 0;
 
-    function loadCustomData() {
-      const text = document.getElementById("dataInput").value.trim();
-      const statusEl = document.getElementById("loadStatus");
-      const quizStatus = document.getElementById("quizStatus");
-      const quizArea = document.getElementById("quizArea");
+function loadCustomData() {
+const input = document.getElementById("dataInput").value.trim();
+const statusEl = document.getElementById("loadStatus");
+const quizArea = document.getElementById("quizArea");
 
-      statusEl.textContent = "";
-      quizStatus.textContent = "";
-      quizArea.innerHTML = "";
+if (!input) {
+statusEl.textContent = "⚠️ コードを入力してください。";
+return;
+}
 
-      if (!text) {
-        statusEl.textContent = "quizData のコードを貼り付けてください。";
-        return;
-      }
+try {
+// 安全な解析：変数宣言(const quizData =)を除去して、配列部分だけを取り出す
+// 正規表現で「quizData = 」のような記述をトリミング
+let jsonLike = input
+.replace(/^(const|let|var)\s+quizData\s*=\s*/, "") // 冒頭の変数定義を削除
+.replace(/;$/, ""); // 末尾のセミコロンを削除
 
-      try {
-        // eval で貼り付けられた quizData を読み込む
-        eval(text);
+// new Function を使って、文字列を「データ」として安全に評価
+// evalよりスコープが限定されるため、比較的安全です
+const data = new Function(`return ${jsonLike}`)();
 
-        // quizData が正しく読み込まれたかチェック
-        if (!Array.isArray(quizData) || quizData.length === 0) {
-          statusEl.textContent = "quizData が正しく定義されていません。配列になっているか確認してください。";
-          return;
-        }
+if (!Array.isArray(data)) {
+throw new Error("配列形式ではありません。");
+}
 
-        // 読み込み後に初期化
-        currentIndex = 0;
-        score = 0;
+quizData = data;
+currentIndex = 0;
+score = 0;
 
-        statusEl.textContent = "quizData を読み込みました。クイズを開始します。";
-        renderQuestion();
+statusEl.style.color = "#16a34a";
+statusEl.textContent = "✅ 正しく読み込まれました！";
+renderQuestion();
 
-      } catch (e) {
-        console.error(e);
-        statusEl.textContent = "コードの読み込み中にエラーが発生しました。形式を確認してください。";
-      }
-    }
+} catch (e) {
+console.error(e);
+statusEl.style.color = "#dc2626";
+statusEl.textContent = "❌ 形式エラー：AIが生成したコードをそのまま貼り付けてください。";
+}
+}
 
-    function renderQuestion() {
-      const quizArea = document.getElementById("quizArea");
-      const quizStatus = document.getElementById("quizStatus");
+function renderQuestion() {
+const quizArea = document.getElementById("quizArea");
+const quizStatus = document.getElementById("quizStatus");
 
-      if (currentIndex >= quizData.length) {
-        quizArea.innerHTML = "<p>クイズ終了！ 正解数：" + score + " / " + quizData.length + "</p>";
-        quizStatus.textContent = "おつかれさまでした。もう一度やる場合は、上で別の quizData を読み込んでください。";
-        return;
-      }
+if (currentIndex >= quizData.length) {
+quizArea.innerHTML = `
+<div style="text-align:center; padding:20px;">
+<h3 style="margin:0;">Finish!</h3>
+<p style="font-size:1.5rem; font-weight:bold; color:var(--primary-color);">
+${score} / ${quizData.length} 正解
+</p>
+<button onclick="location.reload()">最初からやり直す</button>
+</div>`;
+quizStatus.textContent = "";
+return;
+}
 
-      const q = quizData[currentIndex];
-      quizArea.innerHTML = "";
+const q = quizData[currentIndex];
+quizArea.innerHTML = "";
 
-      const card = document.createElement("div");
-      card.className = "quiz-card";
+const card = document.createElement("div");
+card.className = "quiz-card";
 
-      const qText = document.createElement("div");
-      qText.textContent = "Q" + (currentIndex + 1) + ". " + q.question;
-      card.appendChild(qText);
+const qText = document.createElement("div");
+qText.style.fontWeight = "bold";
+qText.style.marginBottom = "12px";
+qText.textContent = `Q${currentIndex + 1}. ${q.question}`;
+card.appendChild(qText);
 
-      const choicesDiv = document.createElement("div");
-      choicesDiv.className = "choices";
+const choicesDiv = document.createElement("div");
+choicesDiv.className = "choices";
 
-      q.choices.forEach((choice, idx) => {
-        const btn = document.createElement("button");
-        btn.textContent = choice;
-        btn.onclick = () => handleAnswer(idx, btn, q.answer);
-        choicesDiv.appendChild(btn);
-      });
+q.choices.forEach((choice, idx) => {
+const btn = document.createElement("button");
+btn.textContent = choice;
+btn.className = "choice-btn";
+btn.onclick = () => handleAnswer(idx, btn, q.answer);
+choicesDiv.appendChild(btn);
+});
 
-      card.appendChild(choicesDiv);
-      quizArea.appendChild(card);
+card.appendChild(choicesDiv);
+quizArea.appendChild(card);
+quizStatus.textContent = `Progress: ${currentIndex + 1} / ${quizData.length}`;
+}
 
-      quizStatus.textContent = "問題 " + (currentIndex + 1) + " / " + quizData.length;
-    }
+function handleAnswer(selectedIndex, buttonEl, correctIndex) {
+const buttons = buttonEl.parentElement.querySelectorAll("button");
+buttons.forEach(b => b.disabled = true);
 
-    function handleAnswer(selectedIndex, buttonEl, correctIndex) {
-      const buttons = buttonEl.parentElement.querySelectorAll("button");
-      buttons.forEach(b => b.disabled = true);
+if (selectedIndex === correctIndex) {
+buttonEl.classList.add("correct");
+buttonEl.textContent += " ○";
+score++;
+} else {
+buttonEl.classList.add("wrong");
+buttonEl.textContent += " ×";
+buttons[correctIndex].classList.add("correct");
+}
 
-      if (selectedIndex === correctIndex) {
-        buttonEl.classList.add("correct");
-        score++;
-      } else {
-        buttonEl.classList.add("wrong");
-        buttons[correctIndex].classList.add("correct");
-      }
-
-      setTimeout(() => {
-        currentIndex++;
-        renderQuestion();
-      }, 800);
-    }
-  </script>
-
+// 次の問題へ（0.8秒待機）
+setTimeout(() => {
+currentIndex++;
+renderQuestion();
+}, 800);
+}
+</script>
 </body>
 </html>
